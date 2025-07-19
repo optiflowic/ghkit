@@ -22,7 +22,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -97,3 +98,6 @@ go.work.sum
 
 # env file
 .env
+
+# Build output
+build/

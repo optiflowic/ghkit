@@ -7,12 +7,12 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-    Use:   "ghkit",
-    Short: "ghkit - A CLI tool to scaffold GitHub repository essentials",
+	Use:   "ghkit",
+	Short: "ghkit - A CLI tool to scaffold GitHub repository essentials",
 }
 
 func Execute() {
-    if err := rootCmd.Execute(); err != nil {
-        fmt.Println("Error:", err)
-    }
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println("Error:", err)
+	}
 }

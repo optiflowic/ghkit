@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"strings"
 )
 
 type Handler struct {
@@ -25,7 +26,14 @@ func (h *Handler) Enabled(_ context.Context, level slog.Level) bool {
 
 func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 	ts := r.Time.Format("2006-01-02 15:04:05")
-	_, err := fmt.Fprintf(h.out, "[%s] [%s] %s\n", ts, r.Level.String(), r.Message)
+	attrs := []string{}
+	r.Attrs(func(a slog.Attr) bool {
+		attrs = append(attrs, a.String())
+		return true
+	})
+	_, err := fmt.Fprintf(h.out, "%s [%s] %s (%s)", ts, r.Level.String(), r.Message, strings.Join(attrs, ", "))
+
+	fmt.Fprintln(h.out)
 	return err
 }
 

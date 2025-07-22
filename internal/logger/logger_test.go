@@ -2,7 +2,6 @@ package logger
 
 import (
 	"bytes"
-	"log/slog"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,7 +9,7 @@ import (
 
 func Test_Info(t *testing.T) {
 	buf := new(bytes.Buffer)
-	level := slog.LevelInfo
+	level := LevelInfo
 	log := NewWithWriter(buf, level)
 	msg := "Info message"
 
@@ -23,7 +22,7 @@ func Test_Info(t *testing.T) {
 
 func Test_Error(t *testing.T) {
 	buf := new(bytes.Buffer)
-	level := slog.LevelInfo
+	level := LevelInfo
 	log := NewWithWriter(buf, level)
 	msg := "Error message"
 
@@ -36,7 +35,7 @@ func Test_Error(t *testing.T) {
 
 func Test_DebugDisabled(t *testing.T) {
 	buf := new(bytes.Buffer)
-	level := slog.LevelInfo
+	level := LevelInfo
 	log := NewWithWriter(buf, level)
 	msg := "Debug message"
 
@@ -47,7 +46,7 @@ func Test_DebugDisabled(t *testing.T) {
 
 func Test_DebugEnabled(t *testing.T) {
 	buf := new(bytes.Buffer)
-	level := slog.LevelDebug
+	level := LevelDebug
 	log := NewWithWriter(buf, level)
 	msg := "Debug message"
 

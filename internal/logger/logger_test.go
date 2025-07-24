@@ -2,10 +2,30 @@ package logger
 
 import (
 	"bytes"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func Test_New(t *testing.T) {
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+	msg := "message"
+
+	log := New(nil)
+	log.Info(msg)
+
+	w.Close()
+	os.Stdout = oldStdout
+	var output bytes.Buffer
+	_, _ = output.ReadFrom(r)
+
+	assert.Contains(t, output.String(), "[INFO]")
+	assert.Contains(t, output.String(), msg)
+}
+
 
 func Test_Info(t *testing.T) {
 	buf := new(bytes.Buffer)

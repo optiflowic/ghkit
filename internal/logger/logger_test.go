@@ -36,7 +36,7 @@ func Test_New(t *testing.T) {
 			_, _ = output.ReadFrom(r)
 			outputString := output.String()
 
-			assert.Nil(t, err)
+			assert.NoError(t, err)
 			assert.Contains(t, outputString, tt.msgPrefix)
 			assert.Contains(t, outputString, tt.msg)
 		})
@@ -100,7 +100,7 @@ func Test_NewFromFlags(t *testing.T) {
 			_, _ = output.ReadFrom(r)
 			outputString := output.String()
 
-			assert.Nil(t, err)
+			assert.NoError(t, err)
 			for _, prefix := range tt.includedPrefixes {
 				assert.Contains(t, outputString, prefix)
 			}

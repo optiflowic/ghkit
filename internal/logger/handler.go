@@ -32,9 +32,16 @@ func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 		return true
 	})
 	_, err := fmt.Fprintf(h.out, "%s [%s] %s (%s)", ts, r.Level.String(), r.Message, strings.Join(attrs, ", "))
+	if err != nil {
+		return err
+	}
 
-	fmt.Fprintln(h.out)
-	return err
+	_, err = fmt.Fprintln(h.out)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (h *Handler) WithAttrs(_ []slog.Attr) slog.Handler { return h }

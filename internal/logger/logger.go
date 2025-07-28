@@ -10,7 +10,7 @@ type Logger struct {
 	slog *slog.Logger
 }
 
-func New(level *Level) *Logger {
+func New(level *Level) Logger {
 	l := LevelInfo
 	if level != nil {
 		l = *level
@@ -18,20 +18,23 @@ func New(level *Level) *Logger {
 	return NewWithWriter(os.Stdout, l)
 }
 
-func NewFromFlags(verbose, debug *bool) *Logger {
-	level := LevelError
-	if verbose != nil && *verbose {
-		level = LevelInfo
-	}
-	if debug != nil && *debug {
+func NewFromFlags(verbose, debug bool) Logger {
+	var level Level
+	switch {
+	case debug:
 		level = LevelDebug
+	case verbose:
+		level = LevelInfo
+	default:
+		level = LevelError
 	}
+
 	return NewWithWriter(os.Stdout, level)
 }
 
-func NewWithWriter(w io.Writer, level Level) *Logger {
+func NewWithWriter(w io.Writer, level Level) Logger {
 	handler := NewHandler(w, level.toSlogLevel())
-	return &Logger{slog: slog.New(handler)}
+	return Logger{slog: slog.New(handler)}
 }
 
 func (l *Logger) Info(msg string, args ...any)  { l.slog.Info(msg, args...) }

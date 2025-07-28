@@ -1,0 +1,37 @@
+name: 🚀 CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+
+      - name: 🧰 Install dependencies
+        run: |
+          go mod tidy
+          go mod download
+
+      - name: 📦 Install golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1
+
+      - name: 🧹 Run all checks and build
+        run: make all
+
+      - name: 🧼 Clean build artifacts
+        run: make clean

@@ -26,7 +26,8 @@ You can also customize language, output path, and verbosity.
 
 Typical usage:
 
-  ghkit add issue --lang ja
+  ghkit add all
+  ghkit add issue bug --format md --lang ja
   ghkit list
   ghkit version
 `,

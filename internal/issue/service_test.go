@@ -126,7 +126,7 @@ func Test_Add(t *testing.T) {
 
 		err := service.Add(Bug, yml, lang, tmp, false)
 
-		assert.NoError(t, err)
+		assert.Error(t, err)
 	})
 
 	t.Run("already exists force add", func(t *testing.T) {
@@ -219,7 +219,7 @@ func Test_Add(t *testing.T) {
 
 		err := service.Add(Bug, yml, lang, tmp, false)
 
-		assert.NoError(t, err)
+		assert.Error(t, err)
 	})
 
 	t.Run("writer error", func(t *testing.T) {
@@ -251,6 +251,6 @@ func Test_Add(t *testing.T) {
 
 		err := service.Add(Bug, yml, lang, tmp, false)
 
-		assert.NoError(t, err)
+		assert.Error(t, err)
 	})
 }

@@ -1,6 +1,7 @@
 package issue
 
 import (
+	"errors"
 	"fmt"
 	"path/filepath"
 
@@ -59,6 +60,7 @@ func (s Service) Add(
 		filenames = []string{*filename}
 	}
 
+	var e error
 	for _, filename := range filenames {
 		url := fmt.Sprintf(
 			"%s/%s/.github/ISSUE_TEMPLATE/%s",
@@ -70,6 +72,7 @@ func (s Service) Add(
 		if utils.Exists(dest) {
 			if !force {
 				s.log.Error("Already exists", "path", dest)
+				e = errors.Join(e, fmt.Errorf("skipped because it already existed: %s", dest))
 				continue
 			}
 			s.log.Warn("Already exists but will be overwritten by force", "path", dest)
@@ -78,16 +81,22 @@ func (s Service) Add(
 		data, err := s.fetcher.Fetch(url)
 		if err != nil {
 			s.log.Error("Failed to fetch", "url", url, "error", err)
+			e = errors.Join(e, err)
 			continue
 		}
 
 		content := s.commenter.PrependGeneratedComment(data, format, url)
 		if err := s.writer.Write(dest, content); err != nil {
 			s.log.Error("Failed to write", "path", dest, "error", err)
+			e = errors.Join(e, err)
 			continue
 		}
 
 		s.log.Info("Template added", "name", filename, "format", format, "dest", dest)
+	}
+
+	if e != nil {
+		return e
 	}
 
 	return nil

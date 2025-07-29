@@ -20,15 +20,24 @@ jobs:
         with:
           go-version-file: "go.mod"
 
-      - name: 🧰 Install dependencies
+      - name: 💾 Cache Go build & tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+            ~/go/bin
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: 🧰 Install Go modules
         run: |
           go mod tidy
           go mod download
 
-      - name: 📦 Install golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.1
+      - name: 📦 Install dev tools
+        run: make install
 
       - name: 🧹 Run all checks and build
         run: make all

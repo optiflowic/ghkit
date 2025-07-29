@@ -60,7 +60,7 @@ Examples:
 	cmd.Flags().
 		StringVarP(&opts.lang, "lang", "l", "en", "The language of the template file (en or ja)")
 	cmd.Flags().
-		StringVar(&opts.path, "path", ".", "Output path for the template (default: current directory)")
+		StringVar(&opts.path, "path", ".", "Root directory path of the GitHub repository (default: current directory)")
 	cmd.Flags().BoolVar(&opts.force, "force", false, "Overwrite file if it already exists")
 
 	return cmd

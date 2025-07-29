@@ -17,8 +17,8 @@ func Test_Fetch(t *testing.T) {
 			_, _ = fmt.Fprint(w, res)
 		}))
 		defer server.Close()
-
 		f := New(logger.NewFromFlags(false, false))
+
 		data, err := f.Fetch(server.URL)
 
 		assert.Equal(t, res, string(data))
@@ -30,8 +30,8 @@ func Test_Fetch(t *testing.T) {
 			http.Error(w, "forbidden", http.StatusForbidden)
 		}))
 		defer server.Close()
-
 		f := New(logger.NewFromFlags(false, false))
+
 		data, err := f.Fetch(server.URL)
 
 		assert.Nil(t, data)
@@ -40,7 +40,17 @@ func Test_Fetch(t *testing.T) {
 
 	t.Run("connection error", func(t *testing.T) {
 		f := New(logger.NewFromFlags(false, false))
+
 		data, err := f.Fetch("http://127.0.0.1:0")
+
+		assert.Nil(t, data)
+		assert.Error(t, err)
+	})
+
+	t.Run("invalid url", func(t *testing.T) {
+		f := New(logger.NewFromFlags(false, false))
+
+		data, err := f.Fetch("invalid")
 
 		assert.Nil(t, data)
 		assert.Error(t, err)

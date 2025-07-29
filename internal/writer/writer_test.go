@@ -1,6 +1,7 @@
 package writer
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
@@ -11,7 +12,7 @@ import (
 
 func Test_Write(t *testing.T) {
 	tmpDir := t.TempDir()
-	log := logger.NewFromFlags(false, false)
+	log := logger.NewWithWriter(io.Discard, logger.LevelError)
 	w := New(log)
 
 	t.Run("success", func(t *testing.T) {

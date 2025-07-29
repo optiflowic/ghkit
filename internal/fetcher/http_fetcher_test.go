@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -11,13 +12,15 @@ import (
 )
 
 func Test_Fetch(t *testing.T) {
+	log := logger.NewWithWriter(io.Discard, logger.LevelError)
+
 	t.Run("success", func(t *testing.T) {
 		res := "hello world"
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprint(w, res)
 		}))
 		defer server.Close()
-		f := New(logger.NewFromFlags(false, false))
+		f := New(log)
 
 		data, err := f.Fetch(server.URL)
 
@@ -30,7 +33,7 @@ func Test_Fetch(t *testing.T) {
 			http.Error(w, "forbidden", http.StatusForbidden)
 		}))
 		defer server.Close()
-		f := New(logger.NewFromFlags(false, false))
+		f := New(log)
 
 		data, err := f.Fetch(server.URL)
 
@@ -39,7 +42,7 @@ func Test_Fetch(t *testing.T) {
 	})
 
 	t.Run("connection error", func(t *testing.T) {
-		f := New(logger.NewFromFlags(false, false))
+		f := New(log)
 
 		data, err := f.Fetch("http://127.0.0.1:0")
 
@@ -48,7 +51,7 @@ func Test_Fetch(t *testing.T) {
 	})
 
 	t.Run("invalid url", func(t *testing.T) {
-		f := New(logger.NewFromFlags(false, false))
+		f := New(log)
 
 		data, err := f.Fetch("invalid")
 

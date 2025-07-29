@@ -31,7 +31,14 @@ func (h *Handler) Handle(_ context.Context, r slog.Record) error {
 		attrs = append(attrs, a.String())
 		return true
 	})
-	_, err := fmt.Fprintf(h.out, "%s [%s] %s (%s)", ts, r.Level.String(), r.Message, strings.Join(attrs, ", "))
+	_, err := fmt.Fprintf(
+		h.out,
+		"%s [%s] %s (%s)",
+		ts,
+		r.Level.String(),
+		r.Message,
+		strings.Join(attrs, ", "),
+	)
 	if err != nil {
 		return err
 	}

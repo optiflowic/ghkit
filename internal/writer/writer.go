@@ -1,34 +1,6 @@
 package writer
 
-import (
-	"fmt"
-	"os"
-	"path/filepath"
-
-	"github.com/optiflowic/ghkit/internal/logger"
-)
-
-type Writer struct {
-	log logger.Logger
-}
-
-func New(log logger.Logger) Writer {
-	return Writer{log: log}
-}
-
-func (w Writer) Write(path string, data []byte) error {
-	dir := filepath.Dir(path)
-
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		w.log.Error("Failed to create directories", "path", dir, "error", err)
-		return fmt.Errorf("failed to create directories: %w", err)
-	}
-
-	if err := os.WriteFile(path, data, 0644); err != nil {
-		w.log.Error("Failed to write file", "path", path, "error", err)
-		return fmt.Errorf("failed to write file: %w", err)
-	}
-
-	w.log.Info("File written", "path", path, "bytes", len(data))
-	return nil
+//go:generate mockgen -source=$GOFILE -package=$GOPACKAGE -destination=./$GOPACKAGE.mock.go
+type Writer interface {
+	Write(path string, data []byte) error
 }

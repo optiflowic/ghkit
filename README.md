@@ -1,5 +1,11 @@
 # ghkit
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/optiflowic/ghkit)](https://goreportcard.com/report/github.com/optiflowic/ghkit)
+[![Release](https://img.shields.io/github/v/release/optiflowic/ghkit?sort=semver)](https://github.com/optiflowic/ghkit/releases)
+[![CI](https://github.com/optiflowic/ghkit/actions/workflows/ci.yml/badge.svg)](https://github.com/optiflowic/ghkit/actions/workflows/ci.yml)
+[![CD](https://github.com/optiflowic/ghkit/actions/workflows/cd.yml/badge.svg)](https://github.com/optiflowic/ghkit/actions/workflows/cd.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+
 **ghkit** is a CLI tool for installing GitHub repository templates such as issue templates, pull request templates, and meta files like CODEOWNERS and CONTRIBUTING.md.
 
 ## 📦 Installation

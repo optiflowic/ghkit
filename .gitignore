@@ -101,3 +101,5 @@ go.work.sum
 
 # Build output
 build/
+# Added by goreleaser init:
+dist/

@@ -40,7 +40,7 @@ archives:
       - goos: windows
         formats: [zip]
 
-homebrew_casks:
+brews:
   - name: ghkit
     description: CLI tool for installing GitHub project templates
     homepage: https://github.com/optiflowic/ghkit

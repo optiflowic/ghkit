@@ -47,6 +47,7 @@ homebrew_casks:
     repository:
       owner: optiflowic
       name: homebrew-tap
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     commit_author:
       name: Optiflowic Bot
       email: optiflowic@gmail.com

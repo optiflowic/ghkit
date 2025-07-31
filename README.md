@@ -58,12 +58,12 @@ ghkit add meta codeowners --path ./your-repo
 
 Most subcommands support the following flags:
 
-- `--format`, `-f`: Specify the format of the issue template. Options: `yml`, `md`. Default: `yml`
-- `--lang`, `-l`: Language for the template. Options: `en`, `ja`. Default: `en`
-- `--path`: Root path to your repository. Instead, use the root path (e.g., `./your-repo`). Default: `.`
+- `--format`, `-f`: Format of the **issue** template. Options: `yml`, `md`. Default: `yml`
+- `--lang`, `-l`: Language for the templates. Options: `en`, `ja`. Default: `en`
+- `--path`: Root path of your repository (e.g., `./your-repo`). Default: `.`
 - `--force`: Overwrite existing files.
-- `--verbose`: Outputs the log.
-- `--debug`: Outputs the debug log.
+- `--verbose`: Outputs log information.
+- `--debug`: Outputs debug logs.
 
 ## 💡 Examples
 
@@ -81,13 +81,15 @@ ghkit add all --format yml --lang en --path ./your-repo --force
 
 ## 📁 Output Structure
 
-Given `--path ./your-repo`, files will be created in:
+Files are generated under `.github/` in the specified repository path:
 
 ```bash
 your-repo/
 └── .github/
     ├── ISSUE_TEMPLATE/
-    │   └── bug.yml, feature.yml, ...
+    │   ├── bug.yml
+    │   ├── feature.yml
+    │   └── ...
     ├── PULL_REQUEST_TEMPLATE.md
     ├── CODEOWNERS
     ├── CONTRIBUTING.md

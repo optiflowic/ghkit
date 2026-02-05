@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/optiflowic/ghkit/internal/commenter"
@@ -48,12 +49,7 @@ Examples:
 				return fmt.Errorf("the specified path does not exist: %s", opts.path)
 			}
 
-			err = service.Add(*lang, opts.path, opts.force)
-			if err != nil {
-				log.Error("Failed to add pr template", "error", err)
-			}
-
-			return nil
+			return service.Add(context.Background(), *lang, opts.path, opts.force)
 		},
 	}
 

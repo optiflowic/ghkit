@@ -10,6 +10,7 @@
 package fetcher
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "go.uber.org/mock/gomock"
@@ -40,16 +41,16 @@ func (m *MockFetcher) EXPECT() *MockFetcherMockRecorder {
 }
 
 // Fetch mocks base method.
-func (m *MockFetcher) Fetch(rawURL string) ([]byte, error) {
+func (m *MockFetcher) Fetch(ctx context.Context, rawURL string) ([]byte, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Fetch", rawURL)
+	ret := m.ctrl.Call(m, "Fetch", ctx, rawURL)
 	ret0, _ := ret[0].([]byte)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Fetch indicates an expected call of Fetch.
-func (mr *MockFetcherMockRecorder) Fetch(rawURL any) *gomock.Call {
+func (mr *MockFetcherMockRecorder) Fetch(ctx, rawURL any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Fetch", reflect.TypeOf((*MockFetcher)(nil).Fetch), rawURL)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Fetch", reflect.TypeOf((*MockFetcher)(nil).Fetch), ctx, rawURL)
 }

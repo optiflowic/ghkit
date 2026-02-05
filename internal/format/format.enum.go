@@ -7,11 +7,11 @@ type Format string
 const (
 	Yaml      Format = "yml"
 	Markdown  Format = "md"
-	PlaneText Format = "txt"
+	PlainText Format = "txt"
 )
 
 func New(value string) (*Format, error) {
-	if value != Yaml.Get() && value != Markdown.Get() && value != PlaneText.Get() {
+	if value != Yaml.Get() && value != Markdown.Get() && value != PlainText.Get() {
 		return nil, fmt.Errorf("unsupported format: %s", value)
 	}
 

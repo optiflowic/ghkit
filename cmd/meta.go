@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/optiflowic/ghkit/internal/commenter"
@@ -42,7 +43,7 @@ Examples:
 			c := commenter.New()
 			service := meta.New(log, f, w, c)
 
-			template, err := meta.NewMetaTemplate(args[0])
+			template, err := meta.NewTemplate(args[0])
 			if err != nil {
 				return err
 			}
@@ -54,12 +55,7 @@ Examples:
 				return fmt.Errorf("the specified path does not exist: %s", opts.path)
 			}
 
-			err = service.Add(*template, *lang, opts.path, opts.force)
-			if err != nil {
-				log.Error("Failed to add issue template", "error", err)
-			}
-
-			return nil
+			return service.Add(context.Background(), *template, *lang, opts.path, opts.force)
 		},
 	}
 

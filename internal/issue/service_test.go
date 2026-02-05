@@ -1,6 +1,7 @@
 package issue
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -22,6 +23,7 @@ import (
 func Test_Add(t *testing.T) {
 	tmp := t.TempDir()
 	log := logger.NewWithWriter(io.Discard, logger.LevelError)
+	ctx := context.Background()
 
 	t.Run("single template success", func(t *testing.T) {
 		lang := language.English
@@ -34,7 +36,7 @@ func Test_Add(t *testing.T) {
 			filename,
 		)
 		data := []byte("template data")
-		exceptedPath := filepath.Join(tmp, ".github", "ISSUE_TEMPLATE", filename)
+		expectedPath := filepath.Join(tmp, ".github", "ISSUE_TEMPLATE", filename)
 
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -43,14 +45,14 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 		w.EXPECT().
-			Write(exceptedPath, c.PrependGeneratedComment(data, md, url)).
+			Write(expectedPath, c.PrependGeneratedComment(data, md, url)).
 			Return(nil).
 			Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Bug, md, lang, tmp, false)
+		err := service.Add(ctx, Bug, md, lang, tmp, false)
 
 		assert.NoError(t, err)
 	})
@@ -76,16 +78,16 @@ func Test_Add(t *testing.T) {
 				filename,
 			)
 			data := []byte(fmt.Sprintf("%s template data", filename))
-			exceptedPath := filepath.Join(tmp, ".github", "ISSUE_TEMPLATE", filename)
-			f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+			expectedPath := filepath.Join(tmp, ".github", "ISSUE_TEMPLATE", filename)
+			f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 			w.EXPECT().
-				Write(exceptedPath, c.PrependGeneratedComment(data, yml, url)).
+				Write(expectedPath, c.PrependGeneratedComment(data, yml, url)).
 				Return(nil).
 				Times(1)
 		}
 		service := New(log, f, w, c)
 
-		err = service.Add(All, yml, lang, tmp, false)
+		err = service.Add(ctx, All, yml, lang, tmp, false)
 
 		assert.NoError(t, err)
 	})
@@ -117,14 +119,14 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(data, nil).Times(0)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(0)
 		w.EXPECT().
 			Write(existingPath, c.PrependGeneratedComment(data, yml, url)).
 			Return(nil).
 			Times(0)
 		service := New(log, f, w, c)
 
-		err := service.Add(Bug, yml, lang, tmp, false)
+		err := service.Add(ctx, Bug, yml, lang, tmp, false)
 
 		assert.Error(t, err)
 	})
@@ -157,11 +159,11 @@ func Test_Add(t *testing.T) {
 		c := commenter.New()
 
 		content := c.PrependGeneratedComment(data, yml, url)
-		f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 		w.EXPECT().Write(existingPath, content).Return(nil).Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Bug, yml, lang, tmp, true)
+		err := service.Add(ctx, Bug, yml, lang, tmp, true)
 
 		assert.NoError(t, err)
 	})
@@ -176,7 +178,7 @@ func Test_Add(t *testing.T) {
 			c := commenter.New()
 			service := New(log, f, w, c)
 
-			err := service.Add(All, format.Format("invalid"), language.English, tmp, false)
+			err := service.Add(ctx, All, format.Format("invalid"), language.English, tmp, false)
 
 			assert.Error(t, err)
 		})
@@ -190,7 +192,7 @@ func Test_Add(t *testing.T) {
 			c := commenter.New()
 			service := New(log, f, w, c)
 
-			err := service.Add(Bug, format.Format("invalid"), language.English, tmp, false)
+			err := service.Add(ctx, Bug, format.Format("invalid"), language.English, tmp, false)
 
 			assert.Error(t, err)
 		})
@@ -214,10 +216,10 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(nil, errors.New("fetch error")).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(nil, errors.New("fetch error")).Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Bug, yml, lang, tmp, false)
+		err := service.Add(ctx, Bug, yml, lang, tmp, false)
 
 		assert.Error(t, err)
 	})
@@ -233,7 +235,7 @@ func Test_Add(t *testing.T) {
 			filename,
 		)
 		data := []byte("template data")
-		exceptedPath := filepath.Join(tmp, ".github", "ISSUE_TEMPLATE", filename)
+		expectedPath := filepath.Join(tmp, ".github", "ISSUE_TEMPLATE", filename)
 
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -242,14 +244,14 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 		w.EXPECT().
-			Write(exceptedPath, c.PrependGeneratedComment(data, yml, url)).
+			Write(expectedPath, c.PrependGeneratedComment(data, yml, url)).
 			Return(errors.New("write error")).
 			Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Bug, yml, lang, tmp, false)
+		err := service.Add(ctx, Bug, yml, lang, tmp, false)
 
 		assert.Error(t, err)
 	})

@@ -1,6 +1,7 @@
 package pr
 
 import (
+	"context"
 	"fmt"
 	"path/filepath"
 
@@ -36,6 +37,7 @@ func New(
 }
 
 func (s Service) Add(
+	ctx context.Context,
 	lang language.Language,
 	basePath string,
 	force bool,
@@ -56,16 +58,16 @@ func (s Service) Add(
 		s.log.Warn("Already exists but will be overwritten by force", "path", dest)
 	}
 
-	data, err := s.fetcher.Fetch(url)
+	data, err := s.fetcher.Fetch(ctx, url)
 	if err != nil {
 		s.log.Error("Failed to fetch", "url", url, "error", err)
-		return fmt.Errorf("failed to fetch: %s", url)
+		return fmt.Errorf("failed to fetch %s: %w", url, err)
 	}
 
 	content := s.commenter.PrependGeneratedComment(data, format.Markdown, url)
 	if err := s.writer.Write(dest, content); err != nil {
 		s.log.Error("Failed to write", "path", dest, "error", err)
-		return fmt.Errorf("failed to write: %s", dest)
+		return fmt.Errorf("failed to write %s: %w", dest, err)
 	}
 
 	s.log.Info("Template added", "name", filename, "dest", dest)

@@ -2,9 +2,9 @@ package meta
 
 import (
 	"fmt"
+	"slices"
 
 	f "github.com/optiflowic/ghkit/internal/format"
-	"github.com/optiflowic/ghkit/internal/utils"
 )
 
 type MetaTemplate string
@@ -25,7 +25,7 @@ const (
 var metaTemplates = map[MetaTemplate]FileInfo{
 	CodeOwners: {
 		name:   "CODEOWNERS",
-		format: f.PlaneText,
+		format: f.PlainText,
 	},
 	Contributing: {
 		name:   "CONTRIBUTING.md",
@@ -54,9 +54,9 @@ var metaTemplateNames = []MetaTemplate{
 	All,
 }
 
-func NewMetaTemplate(value string) (*MetaTemplate, error) {
+func NewTemplate(value string) (*MetaTemplate, error) {
 	template := MetaTemplate(value)
-	if !utils.Contains(metaTemplateNames, template) {
+	if !slices.Contains(metaTemplateNames, template) {
 		return nil, fmt.Errorf("unsupported template: %s", value)
 	}
 

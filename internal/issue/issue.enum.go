@@ -2,9 +2,9 @@ package issue
 
 import (
 	"fmt"
+	"slices"
 
 	f "github.com/optiflowic/ghkit/internal/format"
-	"github.com/optiflowic/ghkit/internal/utils"
 )
 
 type IssueTemplate string
@@ -62,9 +62,9 @@ var issueTemplateNames = []IssueTemplate{
 	All,
 }
 
-func NewIssueTemplate(value string) (*IssueTemplate, error) {
+func NewTemplate(value string) (*IssueTemplate, error) {
 	template := IssueTemplate(value)
-	if !utils.Contains(issueTemplateNames, template) {
+	if !slices.Contains(issueTemplateNames, template) {
 		return nil, fmt.Errorf("unsupported template: %s", value)
 	}
 

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_NewIssueTemplate(t *testing.T) {
+func Test_NewTemplate(t *testing.T) {
 	t.Run("valid template", func(t *testing.T) {
 		tests := []struct {
 			name  string
@@ -24,7 +24,7 @@ func Test_NewIssueTemplate(t *testing.T) {
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				template, err := NewIssueTemplate(tt.value)
+				template, err := NewTemplate(tt.value)
 
 				assert.Equal(t, IssueTemplate(tt.value), *template)
 				assert.NoError(t, err)
@@ -33,7 +33,7 @@ func Test_NewIssueTemplate(t *testing.T) {
 	})
 
 	t.Run("invalid template", func(t *testing.T) {
-		template, err := NewIssueTemplate("invalid")
+		template, err := NewTemplate("invalid")
 
 		assert.Nil(t, template)
 		assert.Error(t, err)

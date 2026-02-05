@@ -1,23 +1,31 @@
 package fetcher
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/optiflowic/ghkit/internal/logger"
 )
 
 type HttpFetcher struct {
-	log logger.Logger
+	log    logger.Logger
+	client *http.Client
 }
 
 func New(log logger.Logger) HttpFetcher {
-	return HttpFetcher{log: log}
+	return HttpFetcher{
+		log: log,
+		client: &http.Client{
+			Timeout: 30 * time.Second,
+		},
+	}
 }
 
-func (f HttpFetcher) Fetch(rawURL string) ([]byte, error) {
+func (f HttpFetcher) Fetch(ctx context.Context, rawURL string) ([]byte, error) {
 	f.log.Debug("Starting fetch", "url", rawURL)
 
 	parsedURL, err := url.ParseRequestURI(rawURL)
@@ -26,14 +34,13 @@ func (f HttpFetcher) Fetch(rawURL string) ([]byte, error) {
 		return nil, fmt.Errorf("invalid url: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodGet, parsedURL.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, parsedURL.String(), nil)
 	if err != nil {
 		f.log.Error("Failed to create HTTP request", "error", err)
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := f.client.Do(req)
 	if err != nil {
 		f.log.Error("HTTP request failed", "error", err)
 		return nil, fmt.Errorf("failed to fetch: %w", err)

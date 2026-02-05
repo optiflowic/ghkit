@@ -15,7 +15,7 @@ func Test_New(t *testing.T) {
 		}{
 			{name: "yaml", value: "yml", want: Yaml},
 			{name: "markdown", value: "md", want: Markdown},
-			{name: "planeText", value: "txt", want: PlaneText},
+			{name: "plainText", value: "txt", want: PlainText},
 		}
 
 		for _, tt := range tests {

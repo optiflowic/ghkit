@@ -1,6 +1,7 @@
 package fetcher
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 
 func Test_Fetch(t *testing.T) {
 	log := logger.NewWithWriter(io.Discard, logger.LevelError)
+	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
 		res := "hello world"
@@ -22,7 +24,7 @@ func Test_Fetch(t *testing.T) {
 		defer server.Close()
 		f := New(log)
 
-		data, err := f.Fetch(server.URL)
+		data, err := f.Fetch(ctx, server.URL)
 
 		assert.Equal(t, res, string(data))
 		assert.NoError(t, err)
@@ -35,7 +37,7 @@ func Test_Fetch(t *testing.T) {
 		defer server.Close()
 		f := New(log)
 
-		data, err := f.Fetch(server.URL)
+		data, err := f.Fetch(ctx, server.URL)
 
 		assert.Nil(t, data)
 		assert.Error(t, err)
@@ -44,7 +46,7 @@ func Test_Fetch(t *testing.T) {
 	t.Run("connection error", func(t *testing.T) {
 		f := New(log)
 
-		data, err := f.Fetch("http://127.0.0.1:0")
+		data, err := f.Fetch(ctx, "http://127.0.0.1:0")
 
 		assert.Nil(t, data)
 		assert.Error(t, err)
@@ -53,7 +55,7 @@ func Test_Fetch(t *testing.T) {
 	t.Run("invalid url", func(t *testing.T) {
 		f := New(log)
 
-		data, err := f.Fetch("invalid")
+		data, err := f.Fetch(ctx, "invalid")
 
 		assert.Nil(t, data)
 		assert.Error(t, err)

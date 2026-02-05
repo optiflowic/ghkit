@@ -1,6 +1,7 @@
 package issue
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -37,6 +38,7 @@ func New(
 }
 
 func (s Service) Add(
+	ctx context.Context,
 	template IssueTemplate,
 	format f.Format,
 	lang language.Language,
@@ -78,7 +80,7 @@ func (s Service) Add(
 			s.log.Warn("Already exists but will be overwritten by force", "path", dest)
 		}
 
-		data, err := s.fetcher.Fetch(url)
+		data, err := s.fetcher.Fetch(ctx, url)
 		if err != nil {
 			s.log.Error("Failed to fetch", "url", url, "error", err)
 			e = errors.Join(e, err)
@@ -95,9 +97,5 @@ func (s Service) Add(
 		s.log.Info("Template added", "name", filename, "format", format, "dest", dest)
 	}
 
-	if e != nil {
-		return e
-	}
-
-	return nil
+	return e
 }

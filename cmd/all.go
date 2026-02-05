@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+	"errors"
 	"fmt"
 
 	"github.com/optiflowic/ghkit/internal/commenter"
@@ -52,6 +54,7 @@ Examples:
 				return fmt.Errorf("the specified path does not exist: %s", opts.path)
 			}
 
+			ctx := context.Background()
 			f := fetcher.New(log)
 			w := writer.New(log)
 			c := commenter.New()
@@ -59,20 +62,18 @@ Examples:
 			prService := pr.New(log, f, w, c)
 			metaService := meta.New(log, f, w, c)
 
-			err = issueService.Add(issue.All, *format, *lang, opts.path, opts.force)
-			if err != nil {
-				log.Error("Failed to add issue templates", "error", err)
+			var e error
+			if err := issueService.Add(ctx, issue.All, *format, *lang, opts.path, opts.force); err != nil {
+				e = errors.Join(e, err)
 			}
-			err = prService.Add(*lang, opts.path, opts.force)
-			if err != nil {
-				log.Error("Failed to add pr template", "error", err)
+			if err := prService.Add(ctx, *lang, opts.path, opts.force); err != nil {
+				e = errors.Join(e, err)
 			}
-			err = metaService.Add(meta.All, *lang, opts.path, opts.force)
-			if err != nil {
-				log.Error("Failed to add meta templates", "error", err)
+			if err := metaService.Add(ctx, meta.All, *lang, opts.path, opts.force); err != nil {
+				e = errors.Join(e, err)
 			}
 
-			return nil
+			return e
 		},
 	}
 

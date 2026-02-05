@@ -1,6 +1,7 @@
 package meta
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -22,6 +23,7 @@ import (
 func Test_Add(t *testing.T) {
 	tmp := t.TempDir()
 	log := logger.NewWithWriter(io.Discard, logger.LevelError)
+	ctx := context.Background()
 
 	t.Run("single template success", func(t *testing.T) {
 		lang := language.English
@@ -33,7 +35,7 @@ func Test_Add(t *testing.T) {
 			filename,
 		)
 		data := []byte("template data")
-		exceptedPath := filepath.Join(tmp, ".github", filename)
+		expectedPath := filepath.Join(tmp, ".github", filename)
 
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -42,14 +44,14 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 		w.EXPECT().
-			Write(exceptedPath, c.PrependGeneratedComment(data, format.PlaneText, url)).
+			Write(expectedPath, c.PrependGeneratedComment(data, format.PlainText, url)).
 			Return(nil).
 			Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(CodeOwners, lang, tmp, false)
+		err := service.Add(ctx, CodeOwners, lang, tmp, false)
 
 		assert.NoError(t, err)
 	})
@@ -73,16 +75,16 @@ func Test_Add(t *testing.T) {
 				fileInfo.name,
 			)
 			data := []byte(fmt.Sprintf("%s template data", fileInfo.name))
-			exceptedPath := filepath.Join(tmp, ".github", fileInfo.name)
-			f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+			expectedPath := filepath.Join(tmp, ".github", fileInfo.name)
+			f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 			w.EXPECT().
-				Write(exceptedPath, c.PrependGeneratedComment(data, fileInfo.format, url)).
+				Write(expectedPath, c.PrependGeneratedComment(data, fileInfo.format, url)).
 				Return(nil).
 				Times(1)
 		}
 		service := New(log, f, w, c)
 
-		err := service.Add(All, lang, tmp, false)
+		err := service.Add(ctx, All, lang, tmp, false)
 
 		assert.NoError(t, err)
 	})
@@ -113,14 +115,14 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(data, nil).Times(0)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(0)
 		w.EXPECT().
-			Write(existingPath, c.PrependGeneratedComment(data, format.PlaneText, url)).
+			Write(existingPath, c.PrependGeneratedComment(data, format.PlainText, url)).
 			Return(nil).
 			Times(0)
 		service := New(log, f, w, c)
 
-		err := service.Add(CodeOwners, lang, tmp, false)
+		err := service.Add(ctx, CodeOwners, lang, tmp, false)
 
 		assert.Error(t, err)
 	})
@@ -152,11 +154,11 @@ func Test_Add(t *testing.T) {
 		c := commenter.New()
 
 		content := c.PrependGeneratedComment(data, format.Markdown, url)
-		f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 		w.EXPECT().Write(existingPath, content).Return(nil).Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Contributing, lang, tmp, true)
+		err := service.Add(ctx, Contributing, lang, tmp, true)
 
 		assert.NoError(t, err)
 	})
@@ -170,7 +172,7 @@ func Test_Add(t *testing.T) {
 		c := commenter.New()
 		service := New(log, f, w, c)
 
-		err := service.Add(MetaTemplate("invalid"), language.English, tmp, false)
+		err := service.Add(ctx, MetaTemplate("invalid"), language.English, tmp, false)
 
 		assert.Error(t, err)
 	})
@@ -192,10 +194,10 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(nil, errors.New("fetch error")).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(nil, errors.New("fetch error")).Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Funding, lang, tmp, false)
+		err := service.Add(ctx, Funding, lang, tmp, false)
 
 		assert.Error(t, err)
 	})
@@ -210,7 +212,7 @@ func Test_Add(t *testing.T) {
 			filename,
 		)
 		data := []byte("template data")
-		exceptedPath := filepath.Join(tmp, ".github", filename)
+		expectedPath := filepath.Join(tmp, ".github", filename)
 
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -219,14 +221,14 @@ func Test_Add(t *testing.T) {
 		w := writer.NewMockWriter(ctrl)
 		c := commenter.New()
 
-		f.EXPECT().Fetch(url).Return(data, nil).Times(1)
+		f.EXPECT().Fetch(ctx, url).Return(data, nil).Times(1)
 		w.EXPECT().
-			Write(exceptedPath, c.PrependGeneratedComment(data, format.Markdown, url)).
+			Write(expectedPath, c.PrependGeneratedComment(data, format.Markdown, url)).
 			Return(errors.New("write error")).
 			Times(1)
 		service := New(log, f, w, c)
 
-		err := service.Add(Security, lang, tmp, false)
+		err := service.Add(ctx, Security, lang, tmp, false)
 
 		assert.Error(t, err)
 	})

@@ -1,8 +1,8 @@
 package source_url
 
-type SourceUrl string
+type SourceURL string
 
 const (
-	Repository SourceUrl = "https://github.com/optiflowic/ghkit"
-	Templates  SourceUrl = "https://raw.githubusercontent.com/optiflowic/github-templates/main"
+	Repository SourceURL = "https://github.com/optiflowic/ghkit"
+	Templates  SourceURL = "https://raw.githubusercontent.com/optiflowic/github-templates/main"
 )

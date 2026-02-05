@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_NewMetaTemplate(t *testing.T) {
+func Test_NewTemplate(t *testing.T) {
 	t.Run("valid template", func(t *testing.T) {
 		tests := []struct {
 			name  string
@@ -22,7 +22,7 @@ func Test_NewMetaTemplate(t *testing.T) {
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				template, err := NewMetaTemplate(tt.value)
+				template, err := NewTemplate(tt.value)
 
 				assert.Equal(t, MetaTemplate(tt.value), *template)
 				assert.NoError(t, err)
@@ -31,7 +31,7 @@ func Test_NewMetaTemplate(t *testing.T) {
 	})
 
 	t.Run("invalid template", func(t *testing.T) {
-		template, err := NewMetaTemplate("invalid")
+		template, err := NewTemplate("invalid")
 
 		assert.Nil(t, template)
 		assert.Error(t, err)
@@ -60,7 +60,7 @@ func Test_find(t *testing.T) {
 
 		assert.Equal(t, FileInfo{
 			name:   "CODEOWNERS",
-			format: format.PlaneText,
+			format: format.PlainText,
 		}, *got)
 		assert.NoError(t, err)
 	})
@@ -80,7 +80,7 @@ func Test_all(t *testing.T) {
 
 	assert.Contains(t, got, FileInfo{
 		name:   "CODEOWNERS",
-		format: format.PlaneText,
+		format: format.PlainText,
 	})
 	assert.Contains(t, got, FileInfo{
 		name:   "CONTRIBUTING.md",

@@ -36,7 +36,7 @@ func TestPrependGeneratedComment(t *testing.T) {
 			content,
 		)
 
-		result := c.PrependGeneratedComment(body, format.PlaneText, url)
+		result := c.PrependGeneratedComment(body, format.PlainText, url)
 
 		assert.Equal(t, expected, string(result))
 	})

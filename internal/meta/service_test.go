@@ -124,7 +124,7 @@ func Test_Add(t *testing.T) {
 
 		err := service.Add(ctx, CodeOwners, lang, tmp, false)
 
-		assert.Error(t, err)
+		assert.NoError(t, err)
 	})
 
 	t.Run("already exists force add", func(t *testing.T) {

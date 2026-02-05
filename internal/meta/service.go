@@ -66,8 +66,7 @@ func (s Service) Add(
 		dest := filepath.Join(basePath, ".github", fileInfo.name)
 		if utils.Exists(dest) {
 			if !force {
-				s.log.Error("Already exists", "path", dest)
-				e = errors.Join(e, fmt.Errorf("skipped because it already existed: %s", dest))
+				s.log.Warn("Already exists, skipped", "path", dest)
 				continue
 			}
 			s.log.Warn("Already exists but will be overwritten by force", "path", dest)
